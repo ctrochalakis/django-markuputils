@@ -1,0 +1,85 @@
+Markup Utils
+============
+
+This a django application that adds markup-chain functionallity.
+All you have to do is include markup_utils to your apps and add a
+MARKUP_CHAIN setting in your settings.py file.
+
+The app also includes a build-in filter for code highlighting, see below
+for details.
+
+e.x.
+
+settings.py:
+
+INSTALLED_APPS = (
+    ...
+    'markup_utils',
+    ...
+)
+
+MARKUP_CHAIN = (
+    'markdown.markdown',
+    'markup_utils.filters.code_highlighter',
+)
+
+Usage
+=====
+
+  * Through a python function:
+  	from markup_utils.filters import markup_chain
+	markup_chain(some_content)
+  * Through templatetags
+  	{% include markuptags %}
+	{{ object.body|markup_chain }}
+
+The filters will be called in up to bottom order.
+
+Sample use
+==========
+You can achieve the same result by using any of the following methods.
+Although the first method can be extended to use the caching mechanism,
+which is very cool. Checkout this blog entry for details.
+
+http://www.eflorenzano.com/blog/post/django-tip-denormalization-alternative/
+
+Use it in the model
+-------------------
+
+models.py: 
+
+from django.db import models
+from markup_utils.filters import markup_chain
+
+class Post(models.Model):
+    body = models.TextField('body')
+
+    def _get_body_html(self):
+      return mark_safe(markup_chain(self.body))
+    body_html = property(_get_body_html)
+
+mytemplate.html:
+
+{{ post.body_html }}
+
+Use it in the template
+----------------------
+
+my_template.html:
+
+{% load markuptags %}
+{{ post.body|markup_chain }}
+
+Code highlighting
+=================
+
+code_highlighter finds <pre class="language">...</pre> blocks and
+replaces them with code highlighted blocks using pygments.
+You can use css to format the code, some default css is included in
+static/codehighlight.css
+
+Inner workings
+--------------
+Markdown doesn't touch <pre> elements. So it's safe to pass our content
+to the markdown filter first and then pass it to code_highlighter.
+
