@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.core.urlresolvers import get_mod_func
 from django.utils.safestring import mark_safe
+from django.utils.encoding import force_unicode
 from pygments import highlight
 from pygments.formatters import HtmlFormatter
 from pygments.lexers import LEXERS, get_lexer_by_name
@@ -20,7 +21,7 @@ def code_highlighter(content):
             lexer = get_lexer_by_name(lexer_name, stripnl=True, encoding='UTF-8')
             tag.replaceWith(highlight(tag.renderContents(), lexer, _formatter))
     
-    return soup
+    return force_unicode(soup)
 
 def markup_chain(content):
     for filter in settings.MARKUP_CHAIN:
