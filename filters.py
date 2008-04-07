@@ -23,6 +23,14 @@ def code_highlighter(content):
     
     return force_unicode(soup)
 
+def simple_replace(content):
+    soup=BeautifulSoup(content)
+    for rep in settings.MARKUP_SIMPLE_REPLACE:
+        for tag in soup.findAll(rep['element']):
+            if tag.get('class') == rep['klass']:
+                tag.replaceWith(rep['replace_with'] % { 'content' : tag.renderContents()})
+    return unicode(soup)
+
 def markup_chain(content):
     for filter in settings.MARKUP_CHAIN:
         mod_name, func_name = get_mod_func(filter)

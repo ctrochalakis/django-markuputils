@@ -5,7 +5,8 @@ This a django application that adds markup-chain functionallity.
 All you have to do is include markup_utils to your apps and add a
 MARKUP_CHAIN setting in your settings.py file.
 
-The app also includes a build-in filter for code highlighting, see below
+The app also includes a build-in filter for code highlighting
+and simple replacing, see below
 for details.
 
 e.x.
@@ -21,6 +22,7 @@ INSTALLED_APPS = (
 MARKUP_CHAIN = (
     'markdown.markdown',
     'markup_utils.filters.code_highlighter',
+    'markup_utils.filters.simple_replace',
 )
 
 Usage
@@ -82,4 +84,27 @@ Inner workings
 --------------
 Markdown doesn't touch <pre> elements. So it's safe to pass our content
 to the markdown filter first and then pass it to code_highlighter.
+
+
+Simple replace
+==============
+
+`simple_replace` replaces html elements with a specified expression.
+All you have to do is specify the elements and the replacing string in your
+settings file:
+
+MARKUP_CHAIN = (
+    ...
+    'markup_utils.filters.simple_replace',
+    ...
+)
+
+MARKUP_SIMPLE_REPLACE = (
+    dict(element='span',klass='dj-ticket',
+        replace_with="<a href=\"http://code.djangoproject.com/ticket/%(content)s\">#%(content)s</a>"),
+    dict(...
+)
+
+Replaces `<span class="dj-ticket">6969</span>` with
+`<a href="http://code.djangoproject.com/ticket/6969">#6969</a>`
 
