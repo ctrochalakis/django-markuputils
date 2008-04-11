@@ -2,13 +2,13 @@ from django.conf import settings
 from django.core.urlresolvers import get_mod_func
 from django.utils.safestring import mark_safe
 from django.utils.encoding import force_unicode
-from pygments import highlight
-from pygments.formatters import HtmlFormatter
-from pygments.lexers import LEXERS, get_lexer_by_name
-from BeautifulSoup import BeautifulSoup
-
 
 def code_highlighter(content):
+    from pygments import highlight
+    from pygments.formatters import HtmlFormatter
+    from pygments.lexers import LEXERS, get_lexer_by_name
+    from BeautifulSoup import BeautifulSoup
+
     # a tuple of known lexer names
     _lexer_names = reduce(lambda a,b: a + b[2], LEXERS.itervalues(), ())
 
@@ -24,6 +24,7 @@ def code_highlighter(content):
     return force_unicode(soup)
 
 def simple_replace(content):
+    from BeautifulSoup import BeautifulSoup
     soup=BeautifulSoup(content)
     for rep in settings.MARKUP_SIMPLE_REPLACE:
         for tag in soup.findAll(rep['element']):
